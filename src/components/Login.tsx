@@ -1,6 +1,7 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import styled from "styled-components"
 import { useAuth } from '../context/AuthContext'
+import { Link, useNavigate } from "react-router-dom"
 
 const SCard = styled.div`
     display: flex;
@@ -51,15 +52,24 @@ export default function Login() {
   
     const emailRef = useRef() as React.MutableRefObject<HTMLInputElement>;
     const pwRef = useRef() as React.MutableRefObject<HTMLInputElement>;
+    const navigate = useNavigate()
+
+    const [loading, setLoading] = useState<boolean>(false)
 
     const { login } = useAuth()
 
 
     function handleLogin(){
+        setLoading(true)
         console.log('handle login...')
         login(emailRef.current.value, pwRef.current.value)
-        .then((result:any) => result && console.log("Login successful"))
+        .then((result:any) => {
+            result && console.log("Login successful")
+            navigate("/folder/"+result.user.uid)
+        })
         .catch((err: any) => console.error(err))
+
+        setLoading(false)
         
     }
 
@@ -73,7 +83,7 @@ export default function Login() {
         <STextInput type="password" ref={pwRef}/>
 
 
-        <SSubmitButton onClick={handleLogin}>Login</SSubmitButton>  
+        <SSubmitButton disabled={loading} onClick={handleLogin}>Login</SSubmitButton>  
         <SSmallLink>Forgot password?</SSmallLink>
         <SSmallLink>Don't have an account? Sign up</SSmallLink>
     </SCard>

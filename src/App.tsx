@@ -7,6 +7,7 @@ import AuthProvider from "./context/AuthContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./components/Dashboard/Dashboard";
 import "./App.css"
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const SBody = styled.div`
 
@@ -30,9 +31,11 @@ function App() {
               <Login />
             }/>
 
-            <Route path="/dashboard" element={
+            <Route path="/folder/:folderId" element={
               <Dashboard />
             }/>
+
+            
           </Routes>
         </SBody>
       </AuthProvider>

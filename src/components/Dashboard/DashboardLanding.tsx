@@ -1,20 +1,35 @@
-import React from "react";
-import styled from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFolder } from "@fortawesome/free-solid-svg-icons";
+import React from "react"
+import styled from "styled-components"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faFolder } from "@fortawesome/free-solid-svg-icons"
+import FolderBreadCrumbs from "./FolderBreadCrumbs"
 
 const SContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  border: 2px solid green;
+  position: relative;
 
-  grid-column: 2 / 3;
-  grid-row: 2 / 3;
-  display: grid;
-  grid-template-columns: repeat(4, auto);
-  grid-template-rows: repeat(2, auto);
+`
 
-  gap: 30px;
-  padding: 50px;
-  
-`;
+const SColContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+`
+
+const SDirectoryColumn = styled.div`
+  border: 1px solid green;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+`
+
+const SRow = styled.div`
+  width: 100%;
+  height: 20px;
+  border: 1px solid grey;
+`
 
 const SGridItem = styled.div`
   border: 2px solid red;
@@ -22,21 +37,31 @@ const SGridItem = styled.div`
   background-color: #f6f6f6;
   height: 100%;
   width: 100%;
+`
 
-`;
+const SFolderBreadCrumbs = styled(FolderBreadCrumbs)`
+  border: 2px solid red;
+  width: 100px;
+  height: 100px;
+  background-color:  lightblue;
+`
 
-export default function DashboardLanding() {
+export default function DashboardLanding({ childFolders, currentFolder }: any) {
   return (
     <SContainer>
-      <SGridItem ><FontAwesomeIcon icon={faFolder} /></SGridItem>
-      <SGridItem ></SGridItem>
-      <SGridItem ></SGridItem>
-      <SGridItem ></SGridItem>
+      <SFolderBreadCrumbs currentFolder={currentFolder} />
+     {/*  <SColContainer>
+        <SDirectoryColumn>
+          {childFolders &&
+            childFolders.map((folder: any) => {
+              return <SRow>{folder.name}</SRow>
+            })}
+        </SDirectoryColumn>
 
-      <SGridItem ></SGridItem>
-      <SGridItem ></SGridItem>
-      <SGridItem ></SGridItem>
-      <SGridItem ></SGridItem>
+        <SDirectoryColumn></SDirectoryColumn>
+
+        <SDirectoryColumn></SDirectoryColumn>
+      </SColContainer> */}
     </SContainer>
-  );
+  )
 }

@@ -37,12 +37,12 @@ export class Folders {
         }
 
         let response = {}
-        const docRef = await addDoc(collection(db, "folders"), payload).then((result:any) => {
-            response = result
+        const docRef = addDoc(collection(db, "folders"), payload)
+        .then((result: any) => {
+            return result
         })
-        .catch(e => console.error(e))
 
-        return response
+        
     }
 
 

@@ -1,6 +1,7 @@
 import { useAuth } from "../context/AuthContext";
 import { doc, getDoc } from "firebase/firestore";
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
+import { Folders } from "../api/Folders";
 
 const ACTIONS = {
   SELECT_FOLDER: "select-folder",
@@ -50,23 +51,58 @@ function reducer(state: any, { type, payload }: any) {
   }
 }
 
-export function useFolder(
-    folderId: any = null,
-    folder: any = null,
-    parentFolder: any = null
-){
-    const [state, dispatch] = useReducer(reducer, {
-        folderId,
-        folder,
-        parentFolder,
-        childFolders: [],
-        childFiles: [],
-        loading: false
+export function useFolder(folderId: any = null, folder: any = null) {
+  const [state, dispatch] = useReducer(reducer, {
+    folderId,
+    folder,
+    childFolders: [],
+    childFiles: [],
+    loading: false,
+  });
+
+  const { currentUser } = useAuth();
+
+  useEffect(() => {
+    return dispatch({ type: ACTIONS.SELECT_FOLDER, payload: { folder, folderId } });
+  }, [folder, folderId]);
+
+  useEffect(() => {
+    if (folderId == null) {
+      const rootFolder: any = Folders.getFolderById(currentUser.uid)
+      .then((result: any) => {
+        return dispatch({
+          type: ACTIONS.UPDATE_FOLDER,
+          payload: { folder: result },
+        });
+      })
+
+  
+    }
+
+    const currentFolder = Folders.getFolderById(folderId)
+    .then((result: any ) => {
+      console.log('result: ' + result)
+      return dispatch({
+        type: ACTIONS.UPDATE_FOLDER,
+        payload: { folder: result },
+      });
+    })
+    
+  }, [folderId]);
+
+  useEffect(() => {
+    const childFolders = Folders.getChildFolders(currentUser.uid, folderId)
+    .then((result: any) => {
+      return dispatch({
+        type: ACTIONS.SET_CHILD_FOLDERS,
+        payload: { childFolders: result}
+      })
     })
 
-    const { currentUser } = useAuth()
+    
+    
+  }, [folderId])
+  
 
-
-    return state
+  return state;
 }
-
