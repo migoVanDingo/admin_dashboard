@@ -21,6 +21,9 @@ const SToolbar = styled.div`
   grid-column: 1 / 2;
   grid-row: 1 / 3;
 `
+const SHomeLink = styled.a`
+  text-decoration: none;
+`
 
 const SButton = styled.button`
   width: 100px;
@@ -73,7 +76,7 @@ interface IToolbar {
 export default function Toolbar({}: any) {
 
   const navigate = useNavigate()
-  const { logout } = useAuth()
+  const { logout, currentUser } = useAuth()
 
   function handleLogout() {
     navigate("/login")
@@ -81,7 +84,7 @@ export default function Toolbar({}: any) {
   }
   return (
     <SToolbar>
-      <SToolHeadingMed>My Repo</SToolHeadingMed>
+      <SHomeLink href={"/folder/"+currentUser.uid}><SToolHeadingMed >My Repo</SToolHeadingMed></SHomeLink>
       <SToolHeadingSm>Folders</SToolHeadingSm>
       <SToolbarList>
         <a>link 1</a>

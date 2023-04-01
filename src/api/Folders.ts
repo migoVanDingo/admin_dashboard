@@ -54,7 +54,8 @@ export class Folders {
                 folderId: userId,
                 name: "root",
                 parentId: "",
-                path:["/"],
+                userId: userId,
+                path:[],
                 createdAt: Folders.getDate()
             }
 
@@ -76,7 +77,7 @@ export class Folders {
 
         const snapshot = await getDocs(q)
 
-        return snapshot.docs.map((doc: any) =>  doc.data())
+        return snapshot.docs.map((doc: any) =>  { return{id: doc.id, ...doc.data()}})
     }
 
     private static formatDoc(snapshot: any){
@@ -87,8 +88,8 @@ export class Folders {
     }
 
     public static getDate() {
-        const a = Timestamp.now()
-        const timestamp = new Date(a.seconds)
+    
+        const timestamp = new Date()
         console.log("serverTimestamp: " + timestamp);
         return timestamp;
       }

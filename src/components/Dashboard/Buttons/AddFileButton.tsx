@@ -11,14 +11,21 @@ import { useFolder } from "../../../hooks/useFolder"
 
 const SBootstrapButton = styled(Button)`
  
-  background-color: #d1cdcd;
+  background-color: green;
   border-radius: 4px;
-  border: 1px solid green;
-  color: green;
+  border: 1px solid #e2e2e2;
+  color: #e2e2e2;
   text-align: center;
 
+  padding: 2px;
+  font-size: small;
+  width: 23px;
+
+  font-size: small;
   &:hover {
-    background-color: #90afbd;
+    background-color: #00aa00;
+    color:white;
+    border-color: white;
   }
 `
 
@@ -55,7 +62,7 @@ export default function AddFileButton({ currentFolder }:any) {
   
     return (
       <>
-        <SBootstrapButton variant="success" onClick={handleClick}>
+        <SBootstrapButton size={"sm"} variant="success" onClick={handleClick}>
           <FontAwesomeIcon icon={faFileUpload} />
         </SBootstrapButton>
   

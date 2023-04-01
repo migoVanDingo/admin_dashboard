@@ -10,7 +10,7 @@ const SHeader = styled.div`
   position: relative;
   justify-content: space-between;
   border-bottom: 0.1px solid #4e4e4e;
-  border: 2px solid red;
+
 `
 
 const SSearchbar = styled.input`
@@ -24,21 +24,16 @@ const SSearchbar = styled.input`
 const SButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 5px;
 `
 
-export default function DashboardHeader({ }: any) {
+export default function DashboardHeader({ currentFolder }: any) {
   
-
-  
-
   return (
     <SHeader>
- 
-      
       <SButtonContainer>
-        <AddFolderButton/>
-        <AddFileButton/>
+        <AddFolderButton currentFolder={currentFolder}/>
+        <AddFileButton currentFolder={currentFolder} />
       </SButtonContainer>
     </SHeader>
   )

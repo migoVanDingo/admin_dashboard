@@ -13,7 +13,7 @@ const SDashboard = styled.div`
   width: 100%;
   height: 100vh;
   display: grid;
-  grid-template-columns: [start] 300px [line2] auto [end] 0px;
+  grid-template-columns: [start] 220px [line2] auto [end] 0px;
   background-color: #232323;
 
   position: relative;
@@ -23,14 +23,13 @@ const SDashboardToolbar = styled(Toolbar)``
 
 const SDashboardHeader = styled.div`
   width: 100%;
-  border: 2px solid yellow;
   display: flex;
   flex-direction: row;
+  padding: 8px 1px;
 `
 
 const SRepoSpace = styled.div`
   grid-column: line2/end;
-  border: 1px solid purple;
   height: calc(100vh - 30px);
   margin: 15px 25px;
 
@@ -55,6 +54,11 @@ export default function Dashboard() {
   const { folder, childFolders } = useFolder(currentFolder)
   //console.log(folder)
 
+  useEffect(() => {
+    setCurrentFolder(folderId)
+  }, [folderId])
+
+
   //Functions
 
   if (currentUser) {
@@ -65,18 +69,14 @@ export default function Dashboard() {
           {folder && childFolders && (
             <SDashboardHeader>
               <FolderBreadCrumbs currentFolder={folder} />
-              <DashboardHeader />
+              <DashboardHeader currentFolder={folder}  />
             </SDashboardHeader>
           )}
+
+          {childFolders && (<DashboardLanding childFolders={childFolders} />)}
+          
         </SRepoSpace>
-        {/* 
-        <SDashboardHeader />
-        {folder && childFolders && (
-          <SDashboardLanding
-            childFolders={childFolders}
-            currentFolder={folder}
-          />
-        )} */}
+      
       </SDashboard>
     )
   } else {
