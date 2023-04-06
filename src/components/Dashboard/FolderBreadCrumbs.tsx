@@ -29,7 +29,6 @@ export default function FolderBreadCrumbs({ currentFolder }: any) {
     } else if (currentFolder.path.length === 1){
         path = [...currentFolder.path, { id: currentFolder.id, name: currentFolder.name}]
     } else {
-        console.log("path: " + path)
         console.error("no path: FolderBreadCrumbs")
     }
 

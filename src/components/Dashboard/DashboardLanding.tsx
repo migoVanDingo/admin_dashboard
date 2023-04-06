@@ -1,17 +1,20 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faF, faFolder } from "@fortawesome/free-solid-svg-icons"
 import FolderBreadCrumbs from "./FolderBreadCrumbs"
+import { Folders } from "../../api/Folders"
+import { useAuth } from "../../context/AuthContext"
+import { useFolder } from "../../hooks/useFolder"
+import DirectoryColumn from "./DirectoryColumn"
 
 const SContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  background-color:#131313 ;
+  background-color: #131313;
   height: 100%;
   overflow: scroll;
-
 `
 
 const SColContainer = styled.div`
@@ -20,63 +23,157 @@ const SColContainer = styled.div`
   height: 100%;
 `
 
-const SDirectoryColumn = styled.div`
-  border: 1px solid #232323;
-  flex: 1;
+interface IDashboardLanding {
+  currentFolder: any
+  setCurrentFolder: (folderId: any) => void
+  allFolders: any
+}
 
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-`
+export default function DashboardLanding({
+  currentFolder,
+  setCurrentFolder,
+  allFolders,
+}: IDashboardLanding) {
+  const [generation1, setGeneration1] = useState<any[]>([])
+  const [generation2, setGeneration2] = useState<any[]>([])
+  const [generation3, setGeneration3] = useState<any[]>([])
 
-const SRow = styled.a`
-  width: 100%;
+  const [selectedFolder1, setSelectedFolder1] = useState<any>("")
+  const [selectedFolder2, setSelectedFolder2] = useState<any>("")
+  const [selectedFolder3, setSelectedFolder3] = useState<any>("")
 
-  color: white;
-  display: flex;
-  gap: 5px;
-  padding: 5px;
-  font-size: 0.8rem;
-  text-decoration: none;
+  const [level, setLevel] = useState<number>(2)
 
-  &:hover{
-    background-color:#2b2b2b
+  useEffect(() => {
+    if (generation1.length === 0) {
+      const g1 = allFolders.filter(
+        (folder: any) => folder.path.length === level
+      )
+      setGeneration1(g1)
+    }
+  }, [allFolders])
+
+  useEffect(() => {
+
+    if (selectedFolder1 !== "") {
+      const g2 = allFolders.filter(
+        (folder: any) =>
+          folder.path.length === level + 1 &&
+          folder.parentId === selectedFolder1
+      )
+      setGeneration2(g2)
+    } else {
+      setGeneration2([])
+    }
+  }, [selectedFolder1, allFolders])
+
+  useEffect(() => {
+    if (selectedFolder2 !== "") {
+      const g3 = allFolders.filter(
+        (folder: any) =>
+          folder.path.length === level + 2 &&
+          folder.parentId === selectedFolder2
+      )
+      setGeneration3(g3)
+    } else {
+      setGeneration3([])
+    }
+  }, [selectedFolder2, allFolders])
+
+  const handleClickFolderCol1 = (e: any) => {
+    setCurrentFolder(e.target.id)
+    setSelectedFolder1(e.target.id)
+
+    
   }
-`
 
-const SGridItem = styled.div`
-  border: 2px solid red;
-  border-radius: 4px;
-  background-color: #f6f6f6;
-  height: 100%;
-  width: 100%;
-`
+  const handleClickFolderCol2 = (e: any) => {
+    setCurrentFolder(e.target.id)
+    setSelectedFolder2(e.target.id)
 
-const SFolderBreadCrumbs = styled(FolderBreadCrumbs)`
-  border: 2px solid red;
-  width: 100px;
-  height: 100px;
-  background-color:  lightblue;
-`
+    
+  }
 
-export default function DashboardLanding({ childFolders, currentFolder }: any) {
+  const handleClickFolderCol3 = (e: any) => {
+    setCurrentFolder(e.target.id)
+    setSelectedFolder3(e.target.id)
 
+    
+  }
+
+
+
+  console.log(allFolders)
 
   return (
     <SContainer>
-      
       <SColContainer>
-        <SDirectoryColumn>
-          {childFolders &&
-            childFolders.map((folder: any) => {
-              return <SRow href={"/folder/" + folder.id}><FontAwesomeIcon icon={faFolder}/>{folder.name}</SRow>
-            })}
-        </SDirectoryColumn>
-
-        <SDirectoryColumn></SDirectoryColumn>
-
-        <SDirectoryColumn></SDirectoryColumn>
+        <DirectoryColumn
+          handleClick={handleClickFolderCol1}
+          selectedFolder={selectedFolder1}
+          allFolders={generation1}
+          setSelectedFolder={setSelectedFolder1}
+          setCurrentFolder={setCurrentFolder}
+        />
+        <DirectoryColumn
+        handleClick={handleClickFolderCol2}
+          selectedFolder={selectedFolder2}
+          allFolders={generation2}
+          selectedFolder1={selectedFolder1}
+          setSelectedFolder={setSelectedFolder2}
+          setCurrentFolder={setCurrentFolder}
+        />
+        <DirectoryColumn
+        handleClick={handleClickFolderCol3}
+          selectedFolder={selectedFolder3}
+          allFolders={generation3}
+          setSelectedFolder={setSelectedFolder3}
+          setCurrentFolder={setCurrentFolder}
+        />
       </SColContainer>
     </SContainer>
   )
 }
+/* <SDirectoryColumn>
+          {generation2 &&
+            generation2.map((folder: any, index: any) => {
+              if(selection === folder.parentId){
+                return (
+                  <SRow
+                    key={index}
+                    onClick={handleDirClick2}
+                    id={folder.id}
+                    className={
+                      isSelected2 && folder.id === selection2 ? "selected" : ""
+                    }
+                
+                    >
+                    <FontAwesomeIcon icon={faFolder} />
+                    {folder.name}
+                  </SRow>
+                )
+              }
+              
+            })}
+        </SDirectoryColumn>
+
+        <SDirectoryColumn>
+          {generation3 &&
+            generation3.map((folder: any, index: any) => {
+              if(selection2 === folder.parentId){
+              return (
+                <SRow
+                  key={index}
+                  id={folder.id}
+                  className={
+                    isSelected3 && folder.id === selection3 ? "selected" : ""
+                  }
+           
+                >
+                  <FontAwesomeIcon icon={faFolder} />
+                  {folder.name}
+                </SRow>
+              )
+                }
+            })}
+        </SDirectoryColumn> */

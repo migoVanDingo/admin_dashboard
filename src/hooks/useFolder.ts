@@ -9,6 +9,7 @@ const ACTIONS = {
   SET_PARENT_FOLDER: "set-parent-folder",
   SET_CHILD_FOLDERS: "set-child-folders",
   SET_CHILD_FILES: "set-child-files",
+  SET_ALL_FOLDERS: "set-folders"
 };
 
 export const ROOT_FOLDER = {
@@ -24,6 +25,7 @@ function reducer(state: any, { type, payload }: any) {
         folderId: payload.folderId,
         folder: payload.folder,
         parentFolder: payload.parentFolder,
+        allFolders: [],
         childFolders: [],
         childFiles: [],
       };
@@ -46,15 +48,23 @@ function reducer(state: any, { type, payload }: any) {
         childFiles: payload.childFiles,
       };
 
+    case ACTIONS.SET_ALL_FOLDERS:
+      return {
+        ...state,
+        allFolders: payload.allFolders
+      }
+
     default:
       return state;
   }
 }
 
 export function useFolder(folderId: any = null, folder: any = null) {
+
   const [state, dispatch] = useReducer(reducer, {
     folderId,
     folder,
+    allFolders: [],
     childFolders: [],
     childFiles: [],
     loading: false,
@@ -66,6 +76,7 @@ export function useFolder(folderId: any = null, folder: any = null) {
     return dispatch({ type: ACTIONS.SELECT_FOLDER, payload: { folder, folderId } });
   }, [folder, folderId]);
 
+  //CurrentFolder
   useEffect(() => {
     if (folderId == null) {
       const rootFolder: any = Folders.getFolderById(currentUser.uid)
@@ -81,7 +92,6 @@ export function useFolder(folderId: any = null, folder: any = null) {
 
     const currentFolder = Folders.getFolderById(folderId)
     .then((result: any ) => {
-      console.log('result: ' + result)
       return dispatch({
         type: ACTIONS.UPDATE_FOLDER,
         payload: { folder: result },
@@ -90,6 +100,9 @@ export function useFolder(folderId: any = null, folder: any = null) {
     
   }, [folderId]);
 
+
+
+  //ChildFolders
   useEffect(() => {
     const childFolders = Folders.getChildFolders(currentUser.uid, folderId)
     .then((result: any) => {
@@ -99,9 +112,24 @@ export function useFolder(folderId: any = null, folder: any = null) {
       })
     })
 
-    
-    
   }, [folderId])
+
+  useEffect(() => {
+  
+    const allFolders = Folders.getFolders(currentUser.uid)
+    .then((result: any) => {
+
+      console.log("hook: " + JSON.stringify(result))
+      return dispatch({
+        type: ACTIONS.SET_ALL_FOLDERS,
+        payload: { allFolders: result }
+      })
+    })
+    .catch(err => {
+      console.log("ERROR useFolder::allFolders()" + err )
+      console.error(err)
+    })
+  },[folderId])
   
 
   return state;

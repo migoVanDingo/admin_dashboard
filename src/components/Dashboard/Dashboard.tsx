@@ -43,38 +43,35 @@ const SDashboardLanding = styled(DashboardLanding)`
 `
 
 export default function Dashboard() {
+
   //Hooks
   const { currentUser } = useAuth()
-  const { folderId } = useParams()
+  const folderId = currentUser.uid
 
-  const [currentFolder, setCurrentFolder] = useState<string | undefined>(
-    folderId
-  )
+  const [currentFolder, setCurrentFolder] = useState<string>(folderId)
 
-  const { folder, childFolders } = useFolder(currentFolder)
-  //console.log(folder)
-
-  useEffect(() => {
-    setCurrentFolder(folderId)
-  }, [folderId])
+  const { folder, allFolders } = useFolder(currentFolder)
 
 
   //Functions
+
+console.log("currentFOlder: " + currentFolder)
 
   if (currentUser) {
     return (
       <SDashboard>
         <Toolbar />
         <SRepoSpace>
-          {folder && childFolders && (
-            <SDashboardHeader>
-              <FolderBreadCrumbs currentFolder={folder} />
-              <DashboardHeader currentFolder={folder}  />
+     
+         
+          <SDashboardHeader>
+              {/* <FolderBreadCrumbs currentFolder={folder} /> */}
+           <DashboardHeader currentFolder={folder} setCurrentFolder={setCurrentFolder} />
             </SDashboardHeader>
-          )}
-
-          {childFolders && (<DashboardLanding childFolders={childFolders} />)}
-          
+       
+      
+          <DashboardLanding setCurrentFolder={setCurrentFolder} currentFolder={folder} allFolders={allFolders} />
+     
         </SRepoSpace>
       
       </SDashboard>

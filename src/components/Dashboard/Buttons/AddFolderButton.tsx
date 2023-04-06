@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import Button from "react-bootstrap/Button"
 import Form from "react-bootstrap/Form"
@@ -9,6 +9,7 @@ import { useAuth } from "../../../context/AuthContext"
 import { Folders } from "../../../api/Folders"
 import { useFolder } from "../../../hooks/useFolder"
 import { Timestamp } from "firebase/firestore"
+import { useNavigate } from "react-router"
 
 const SBootstrapButton = styled(Button)`
  
@@ -36,13 +37,17 @@ interface IFolderPayload {
   createdAt: Date
 }
 
-export default function AddFolderButton({ currentFolder }: any) {
+interface IAddFolderButton{
+  currentFolder: any
+  setCurrentFolder: (folderId: string) => void
+}
+
+export default function AddFolderButton({ currentFolder, setCurrentFolder }: IAddFolderButton) {
   const [isModalOpen, setModalOpen] = useState<boolean>(false)
   const [folderName, setFolderName] = useState<string>("")
   const [isLoading, setLoading] = useState<boolean>(false)
 
   const { currentUser } = useAuth()
-
 
   const closeModal = () => {
     setModalOpen(false)
@@ -65,11 +70,14 @@ export default function AddFolderButton({ currentFolder }: any) {
     
 
     const newFolder = await Folders.addFolder(payload)
-    console.log(newFolder)
+   
+    setCurrentFolder(newFolder.id)
     setLoading(false)
     setModalOpen(false)
-  }
 
+ 
+    
+  }
 
   return (
     <>
@@ -78,10 +86,13 @@ export default function AddFolderButton({ currentFolder }: any) {
       </SBootstrapButton>
 
       <Modal show={isModalOpen} onHide={closeModal}>
-        {
-          isLoading ? <h2>Loading...</h2> : 
+    
           <Form onSubmit={handleSubmit}>
           <Modal.Body>
+          {
+          isLoading ? <Form.Group>
+           <h1>Loading</h1> 
+          </Form.Group> : 
             <Form.Group>
               <Form.Label>Folder Name</Form.Label>
               <Form.Control
@@ -91,13 +102,14 @@ export default function AddFolderButton({ currentFolder }: any) {
                 onChange={(e) => setFolderName(e.target.value)}
               />
             </Form.Group>
+}
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={closeModal}>Close</Button>
             <Button disabled={isLoading} variant="success" type="submit">Add Folder</Button>
           </Modal.Footer>
         </Form>
-        }
+        
         
       </Modal>
     </>

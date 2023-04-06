@@ -47,10 +47,6 @@ export class Users {
       createdAt: this.getDate(),
     };
 
-    console.log("users date: " + this.getDate())
-
-
-
     return await setDoc(doc(db, "users", payload.uid), userPayload);
   }
 }

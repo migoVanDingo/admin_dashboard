@@ -20,7 +20,9 @@ export class Folders {
         const q = query(collection(db, "folders"), where("userId", "==", userId))
         const snapshot = await getDocs(q)
 
-        return snapshot
+        
+        
+        return snapshot.docs.map((doc: any) =>  { return{id: doc.id, ...doc.data()}})
     }
 
     public static async getFolderById(id: string){
@@ -36,11 +38,9 @@ export class Folders {
             createdAt: Folders.getDate()
         }
 
-        let response = {}
-        const docRef = addDoc(collection(db, "folders"), payload)
-        .then((result: any) => {
-            return result
-        })
+        const docRef = await addDoc(collection(db, "folders"), payload)
+
+        return docRef
 
         
     }
@@ -55,11 +55,9 @@ export class Folders {
                 name: "root",
                 parentId: "",
                 userId: userId,
-                path:[],
+                path:[{id: "root", name: "root"}],
                 createdAt: Folders.getDate()
             }
-
-            console.log('date: ' + Folders.getDate())
     
             const docRef = await setDoc(doc(db, "folders", userId), payload)
             
@@ -90,7 +88,6 @@ export class Folders {
     public static getDate() {
     
         const timestamp = new Date()
-        console.log("serverTimestamp: " + timestamp);
         return timestamp;
       }
 }

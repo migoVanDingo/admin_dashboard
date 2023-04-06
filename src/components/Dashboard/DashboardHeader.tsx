@@ -27,12 +27,12 @@ const SButtonContainer = styled.div`
   gap: 5px;
 `
 
-export default function DashboardHeader({ currentFolder }: any) {
+export default function DashboardHeader({ currentFolder, setCurrentFolder }: any) {
   
   return (
     <SHeader>
       <SButtonContainer>
-        <AddFolderButton currentFolder={currentFolder}/>
+        <AddFolderButton currentFolder={currentFolder} setCurrentFolder={setCurrentFolder} />
         <AddFileButton currentFolder={currentFolder} />
       </SButtonContainer>
     </SHeader>
