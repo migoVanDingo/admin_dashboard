@@ -26,10 +26,15 @@ export class Folders {
     }
 
     public static async getFolderById(id: string){
-        const docRef = doc(db, "folders", id)
+        try {
+            const docRef = doc(db, "folders", id)
         const docSnap = await getDoc(docRef)
 
         return Folders.formatDoc(docSnap)
+        } catch (error) {
+            
+        }
+        
     }
 
     public static async addFolder(payload: any){
@@ -55,11 +60,27 @@ export class Folders {
                 name: "root",
                 parentId: "",
                 userId: userId,
-                path:[{id: "root", name: "root"}],
+                path:[],
                 createdAt: Folders.getDate()
             }
     
             const docRef = await setDoc(doc(db, "folders", userId), payload)
+            .then((result: any) => {
+                console.log(result)
+                const rootSon = {
+                    folderId: userId,
+                    name: "root",
+                    parentId: "",
+                    userId: userId,
+                    path:[{id: result.id, name: "root"}],
+                    createdAt: Folders.getDate()
+                }
+                
+            })
+            .catch((err: any) => {
+                console.log("addRootFolder.tsx : " + err)
+            })
+            
             
             return docRef
     

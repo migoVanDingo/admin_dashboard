@@ -1,7 +1,9 @@
-import React, { useEffect, useState,  } from 'react'
-import styled from 'styled-components'
+import React, { useEffect, useState } from "react"
+import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faF, faFolder } from "@fortawesome/free-solid-svg-icons"
+import { useAuth } from "../../context/AuthContext"
+import { useFolder } from "../../hooks/useFolder"
 
 const SDirectoryColumn = styled.div`
   border: 1px solid #232323;
@@ -34,49 +36,46 @@ const SRow = styled.a`
     background-color: #2b2b2b;
   }
 `
-interface IDirectoryColumn{
-    selectedFolder: string
-    allFolders: any[]
-    setSelectedFolder: (a: any) => void
-    setCurrentFolder: (a:any) =>void
-    selectedFolder1?: string
-    selectedFolder2?: string
-    handleClick?: (e:any) => void
-}
 
-export default function DirectoryColumn({ selectedFolder, allFolders, setSelectedFolder, setCurrentFolder, selectedFolder1, selectedFolder2, handleClick }: IDirectoryColumn) {
 
-    //console.log("DC: " + currentFolder)
+export default function DirectoryColumn({
+  currentFolder,
+  allFolders,
+  setFolderId
+}: any) {
 
-    useEffect(() => {
 
-    },[])
 
-    
+  function handleClick(e: any) {
+    setFolderId(e.target.id)
+  }
 
-   /*  function handleClick(e: any){
-        setCurrentFolder(e.target.id)
-        setSelectedFolder(e.target.id)
-    } */
+  console.log("folder: " + JSON.stringify(currentFolder))
+  console.log("id: " + currentFolder.id)
 
   return (
     <SDirectoryColumn>
-          {allFolders &&
-            allFolders.map((folder: any, index: any) => {
-
-              return (
-                <SRow
-                  key={index}
-                  onClick={handleClick}
-                  id={folder.id}
-                  className={ selectedFolder === folder.id ? "selected" : "" }
-                  /* href={"/folder/" + folder.id} */
-                >
-                  <FontAwesomeIcon icon={faFolder} />
-                  {folder.name}
-                </SRow>
-              )
-            })}
-        </SDirectoryColumn>
+      {allFolders &&
+        allFolders.map((folder: any, index: any) => {
+         
+            
+            return (
+                
+              <SRow
+                key={index}
+                onClick={handleClick}
+                id={folder.id}
+                className={
+                    currentFolder.id === folder.id ? "selected" :  ""
+                }
+                /* href={"/folder/" + folder.id} */
+              >
+                <FontAwesomeIcon icon={faFolder} />
+                {folder.name}
+              </SRow>
+            )
+          
+        })}
+    </SDirectoryColumn>
   )
 }

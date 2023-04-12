@@ -4,14 +4,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faFolder } from "@fortawesome/free-solid-svg-icons"
 import { useAuth } from "../../context/AuthContext"
 import { useNavigate } from "react-router"
+import FileTree from "./FileTree"
 
 const SToolbar = styled.div`
-  background: #191919;
+  background: #1a1a1a;
 
   display: flex;
   flex-direction: column;
   color: #d2d2d2;
-  padding: 35px 40px;
+  padding: 35px 20px;
 
   align-items: center;
   gap: 20px;
@@ -73,7 +74,7 @@ interface IToolbar {
   handleCreateFolder: () => any
 }
 
-export default function Toolbar({}: any) {
+export default function Toolbar({ allFolders, rootId }: any) {
 
   const navigate = useNavigate()
   const { logout, currentUser } = useAuth()
@@ -86,12 +87,7 @@ export default function Toolbar({}: any) {
     <SToolbar>
       <SHomeLink href={"/folder/"+currentUser.uid}><SToolHeadingMed >My Repo</SToolHeadingMed></SHomeLink>
       <SToolHeadingSm>Folders</SToolHeadingSm>
-      <SToolbarList>
-        <a>link 1</a>
-        <a>link 2</a>
-        <a>link 3</a>
-        <a>link 4</a>
-      </SToolbarList>
+      <FileTree rootId={rootId} allFolders={allFolders} />
       <SDashLogout onMouseUp={handleLogout}>Logout</SDashLogout>
     </SToolbar>
   )

@@ -7,7 +7,9 @@ import DashboardLanding from "./DashboardLanding"
 import { useFolder } from "../../hooks/useFolder"
 import { Folders } from "../../api/Folders"
 import { useParams } from "react-router"
-import FolderBreadCrumbs from "./FolderBreadCrumbs"
+//import FolderBreadCrumbs from "./FolderBreadCrumbs"
+import ControlledTreeView from "./ControlledTreeView"
+import FileTree from "./FileTree"
 
 const SDashboard = styled.div`
   width: 100%;
@@ -43,37 +45,52 @@ const SDashboardLanding = styled(DashboardLanding)`
 `
 
 export default function Dashboard() {
-
-  //Hooks
   const { currentUser } = useAuth()
-  const folderId = currentUser.uid
 
-  const [currentFolder, setCurrentFolder] = useState<string>(folderId)
+  const [folderId, setFolderId] = useState<string>(currentUser.uid)
+  const [folders, setFolders] = useState<any[]>([])
+  const [path, setPath] = useState<any[]>([])
+  const [rootFolder, setRootFolder] = useState<any>(currentUser.uid)
 
-  const { folder, allFolders } = useFolder(currentFolder)
+  //const { folder, allFolders } = useFolder(folderId)
 
+  useEffect(() => {
+    const fetchAllFolders = async (folderId: string) => {
+      return await Folders.getFolders(folderId)
+    }
+    
+    const allFolders = fetchAllFolders(folderId)
+    allFolders.then((result: any) => {
+      setFolders(result)
+    })
+    .catch((err: any) => {
+      console.log(err)
+    })
 
-  //Functions
-
-console.log("currentFOlder: " + currentFolder)
+  }, [folderId])
 
   if (currentUser) {
     return (
       <SDashboard>
-        <Toolbar />
+        <Toolbar allFolders={folders} rootId={currentUser.uid} />
         <SRepoSpace>
-     
-         
-          <SDashboardHeader>
-              {/* <FolderBreadCrumbs currentFolder={folder} /> */}
-           <DashboardHeader currentFolder={folder} setCurrentFolder={setCurrentFolder} />
-            </SDashboardHeader>
-       
-      
-          <DashboardLanding setCurrentFolder={setCurrentFolder} currentFolder={folder} allFolders={allFolders} />
-     
+          {/* <DashboardHeader
+            currentFolder={folder}
+            setCurrentFolder={setFolderId}
+          /> */}
+          {/* <SDashboardHeader>
+            <FolderBreadCrumbs currentFolder={folder} />
+            
+          </SDashboardHeader>
+
+          <DashboardLanding
+            rootFolder={rootFolder}
+            currentFolder={currentFolder}
+            allFolders={allFolders}
+            setFolderId={setFolderId}
+            path={path}
+          /> */}
         </SRepoSpace>
-      
       </SDashboard>
     )
   } else {

@@ -119,7 +119,7 @@ export function useFolder(folderId: any = null, folder: any = null) {
     const allFolders = Folders.getFolders(currentUser.uid)
     .then((result: any) => {
 
-      console.log("hook: " + JSON.stringify(result))
+      //console.log("hook: " + JSON.stringify(result))
       return dispatch({
         type: ACTIONS.SET_ALL_FOLDERS,
         payload: { allFolders: result }
