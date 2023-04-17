@@ -9,6 +9,7 @@ const ACTIONS = {
   SET_PARENT_FOLDER: "set-parent-folder",
   SET_CHILD_FOLDERS: "set-child-folders",
   SET_CHILD_FILES: "set-child-files",
+  SET_ALL_FOLDERS: "set-folders"
 };
 
 export const ROOT_FOLDER = {
@@ -24,6 +25,7 @@ function reducer(state: any, { type, payload }: any) {
         folderId: payload.folderId,
         folder: payload.folder,
         parentFolder: payload.parentFolder,
+        allFolders: [],
         childFolders: [],
         childFiles: [],
       };
@@ -46,15 +48,23 @@ function reducer(state: any, { type, payload }: any) {
         childFiles: payload.childFiles,
       };
 
+    case ACTIONS.SET_ALL_FOLDERS:
+      return {
+        ...state,
+        allFolders: payload.allFolders
+      }
+
     default:
       return state;
   }
 }
 
 export function useFolder(folderId: any = null, folder: any = null) {
+
   const [state, dispatch] = useReducer(reducer, {
     folderId,
     folder,
+    allFolders: [],
     childFolders: [],
     childFiles: [],
     loading: false,
@@ -66,30 +76,53 @@ export function useFolder(folderId: any = null, folder: any = null) {
     return dispatch({ type: ACTIONS.SELECT_FOLDER, payload: { folder, folderId } });
   }, [folder, folderId]);
 
+  //CurrentFolder
   useEffect(() => {
-    if (folderId == null) {
-      const rootFolder: any = Folders.getFolderById(currentUser.uid)
-      .then((result: any) => {
+
+    const getRootFolder = async() => {
+      return await Folders.getFolderById(currentUser.uid)
+    }
+
+    const returnRoot = () => {
+      const rootFolder = getRootFolder()
+        rootFolder.then((result: any) => {
+          return dispatch({
+            type: ACTIONS.UPDATE_FOLDER,
+            payload: { folder: result },
+          });
+        })
+      
+    }
+
+    const getCurrentFolder = async (folderId: string) => {
+      return await Folders.getFolderById(folderId)
+    }
+
+    
+    const returnCurrent = (folderId: string) => {
+      const currentFolder = getCurrentFolder(folderId)
+      currentFolder.then((result: any ) => {
         return dispatch({
           type: ACTIONS.UPDATE_FOLDER,
           payload: { folder: result },
         });
       })
 
-  
     }
 
-    const currentFolder = Folders.getFolderById(folderId)
-    .then((result: any ) => {
-      console.log('result: ' + result)
-      return dispatch({
-        type: ACTIONS.UPDATE_FOLDER,
-        payload: { folder: result },
-      });
-    })
+    if (folderId == null) {
+      return returnRoot
+    } else {
+      return returnCurrent(folderId)
+    }
+    
+    
     
   }, [folderId]);
 
+
+
+  //Child Folders
   useEffect(() => {
     const childFolders = Folders.getChildFolders(currentUser.uid, folderId)
     .then((result: any) => {
@@ -100,8 +133,26 @@ export function useFolder(folderId: any = null, folder: any = null) {
     })
 
     
-    
+
   }, [folderId])
+
+  //All Folders
+  useEffect(() => {
+  
+    const allFolders = Folders.getFolders(currentUser.uid)
+    .then((result: any) => {
+
+      //console.log("hook: " + JSON.stringify(result))
+      return dispatch({
+        type: ACTIONS.SET_ALL_FOLDERS,
+        payload: { allFolders: result }
+      })
+    })
+    .catch(err => {
+      console.log("ERROR useFolder::allFolders()" + err )
+      console.error(err)
+    })
+  },[folderId])
   
 
   return state;

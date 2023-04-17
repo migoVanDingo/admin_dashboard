@@ -4,14 +4,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faFolder } from "@fortawesome/free-solid-svg-icons"
 import { useAuth } from "../../context/AuthContext"
 import { useNavigate } from "react-router"
+import FileTree from "./FileTree"
 
 const SToolbar = styled.div`
-  background: #191919;
+  background: #1a1a1a;
 
   display: flex;
   flex-direction: column;
   color: #d2d2d2;
-  padding: 35px 40px;
+  padding: 35px 20px;
 
   align-items: center;
   gap: 20px;
@@ -20,6 +21,10 @@ const SToolbar = styled.div`
 
   grid-column: 1 / 2;
   grid-row: 1 / 3;
+  
+`
+const SHomeLink = styled.a`
+  text-decoration: none;
 `
 
 const SButton = styled.button`
@@ -43,6 +48,8 @@ const SToolHeadingSm = styled.h4`
   width: 100%;
 
   font-weight: 400;
+  padding: 0 0 0 8px;
+  margin: 0;
 `
 const SDashLogout = styled.a`
   color: #006aff;
@@ -53,42 +60,52 @@ const SDashLogout = styled.a`
   border-radius: 4px;
   padding: 10px;
   font-size: 1rem;
+  position: absolute;
+  bottom: 100px;
 
-  &:hover{
-    color:#60a2fe;
-    border-color:#60a2fe;
+  &:hover {
+    color: #60a2fe;
+    border-color: #60a2fe;
   }
 
-  &:active{
-    color:#3ee98b;
-    border-color:#3ee98b;
+  &:active {
+    color: #3ee98b;
+    border-color: #3ee98b;
   }
-
 `
 
 interface IToolbar {
   handleCreateFolder: () => any
+  folderId: string
 }
 
-export default function Toolbar({}: any) {
-
+export default function Toolbar({
+  allFolders,
+  rootId,
+  setCurrentFolderId,
+  folderId
+}: any) {
   const navigate = useNavigate()
-  const { logout } = useAuth()
+  const { logout, currentUser } = useAuth()
 
   function handleLogout() {
     navigate("/login")
     logout()
   }
+
+  
   return (
     <SToolbar>
-      <SToolHeadingMed>My Repo</SToolHeadingMed>
+      <SHomeLink href={"/folder/" + currentUser.uid}>
+        <SToolHeadingMed>My Repo</SToolHeadingMed>
+      </SHomeLink>
       <SToolHeadingSm>Folders</SToolHeadingSm>
-      <SToolbarList>
-        <a>link 1</a>
-        <a>link 2</a>
-        <a>link 3</a>
-        <a>link 4</a>
-      </SToolbarList>
+      <FileTree
+      folderId={folderId}
+        rootId={rootId}
+        allFolders={allFolders}
+        setCurrentFolderId={setCurrentFolderId}
+      />
       <SDashLogout onMouseUp={handleLogout}>Logout</SDashLogout>
     </SToolbar>
   )

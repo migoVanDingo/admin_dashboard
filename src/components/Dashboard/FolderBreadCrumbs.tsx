@@ -4,9 +4,12 @@ import BreadcrumbItem from "react-bootstrap/esm/BreadcrumbItem"
 import { Link } from "react-router-dom"
 import { useFolder } from "../../hooks/useFolder"
 import styled from "styled-components"
+import { useAuth } from "../../context/AuthContext"
 
 const SLink = styled(Link)`
     text-decoration: none;
+    font-size: small;
+   
 `
 
 const SBreadcrumbItem = styled(BreadcrumbItem)`
@@ -17,15 +20,15 @@ const SBreadcrumbItem = styled(BreadcrumbItem)`
 
 export default function FolderBreadCrumbs({ currentFolder }: any) {
 
-console.log(currentFolder)
+  const { currentUser } = useAuth()
+
     let path: any[] = []
 
     if(currentFolder.name === "root"){
         path = [{id: currentFolder.id, name: currentFolder.name}]
-    } else if (currentFolder.path.length > 0){
+    } else if (currentFolder.path.length === 1){
         path = [...currentFolder.path, { id: currentFolder.id, name: currentFolder.name}]
     } else {
-        console.log("path: " + path)
         console.error("no path: FolderBreadCrumbs")
     }
 
@@ -37,10 +40,11 @@ console.log(currentFolder)
       listProps={{ className: "p-0 m-0" }}
       style={{ textDecoration: "none"}}
     >
+  
       {
-
+      
       path.map((folder: any, index: number) => {
-        console.log(folder.name)
+       
         return (
             <>
             
@@ -54,7 +58,7 @@ console.log(currentFolder)
             className="text-truncate d-inline-block"
             style={{ maxWidth: "150px"}}
           >
-          {"/"} {folder.name}
+           {folder.name}
           </BreadcrumbItem>
           </>
         )

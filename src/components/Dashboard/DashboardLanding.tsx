@@ -1,67 +1,85 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faFolder } from "@fortawesome/free-solid-svg-icons"
+import { faF, faFolder } from "@fortawesome/free-solid-svg-icons"
 import FolderBreadCrumbs from "./FolderBreadCrumbs"
+import { Folders } from "../../api/Folders"
+import { useAuth } from "../../context/AuthContext"
+import { useFolder } from "../../hooks/useFolder"
+import DirectoryColumn from "./DirectoryColumn"
+import PageFolderButton from "./Buttons/PageFolderButton"
+import PageFileButton from "./Buttons/PageFileButton"
 
 const SContainer = styled.div`
   display: flex;
   flex-direction: column;
-  border: 2px solid green;
   position: relative;
+  background-color: #2b2b2b;
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
 
-`
-
-const SColContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-`
-
-const SDirectoryColumn = styled.div`
-  border: 1px solid green;
-  flex: 1;
-
-  display: flex;
-  flex-direction: column;
+  margin-top: 20px;
 `
 
 const SRow = styled.div`
+
   width: 100%;
-  height: 20px;
-  border: 1px solid grey;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 20px 60px;
+  gap: 40px;
 `
 
-const SGridItem = styled.div`
-  border: 2px solid red;
-  border-radius: 4px;
-  background-color: #f6f6f6;
-  height: 100%;
-  width: 100%;
-`
+export default function DashboardLanding({
+  rootFolder,
+  currentFolder,
+  allFolders,
+  setFolderId,
+  files
+}: any) {
 
-const SFolderBreadCrumbs = styled(FolderBreadCrumbs)`
-  border: 2px solid red;
-  width: 100px;
-  height: 100px;
-  background-color:  lightblue;
-`
+  const [pageFolders, setPageFolders] = useState<any[]>([])
 
-export default function DashboardLanding({ childFolders, currentFolder }: any) {
-  return (
-    <SContainer>
-      <SFolderBreadCrumbs currentFolder={currentFolder} />
-     {/*  <SColContainer>
-        <SDirectoryColumn>
-          {childFolders &&
-            childFolders.map((folder: any) => {
-              return <SRow>{folder.name}</SRow>
-            })}
-        </SDirectoryColumn>
+  useEffect(() => {
 
-        <SDirectoryColumn></SDirectoryColumn>
+    const getPageFolders = (currentFolder: any, allFolders: any[]) => {
+      return allFolders.filter((folder: any) => folder.parentId === currentFolder.id)
+    }
 
-        <SDirectoryColumn></SDirectoryColumn>
-      </SColContainer> */}
-    </SContainer>
-  )
+    const returnPageFolders = () => {
+      if (currentFolder !== null && allFolders !== null) {
+        const folders = getPageFolders(currentFolder, allFolders)
+        setPageFolders(folders)
+      }
+    }
+
+    return returnPageFolders()
+
+  }, [currentFolder, allFolders])
+
+
+
+  return <SContainer>
+    <SRow>
+    {
+      pageFolders && pageFolders.map((folder: any) => {
+        return(   
+          <PageFolderButton key={folder.id} folder={folder} setFolderId={setFolderId}/>
+        )
+      })
+    }
+    </SRow>
+    <SRow>
+    {
+      files && files.map((file: any) => {
+        return(
+          <PageFileButton key={file.id} file={file} />
+        )
+      })
+    }
+    </SRow>
+  </SContainer>
 }

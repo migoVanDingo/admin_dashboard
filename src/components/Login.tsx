@@ -65,7 +65,7 @@ export default function Login() {
         login(emailRef.current.value, pwRef.current.value)
         .then((result:any) => {
             result && console.log("Login successful")
-            navigate("/folder/"+result.user.uid)
+            navigate("/dashboard")
         })
         .catch((err: any) => console.error(err))
 

@@ -31,7 +31,7 @@ function App() {
               <Login />
             }/>
 
-            <Route path="/folder/:folderId" element={
+            <Route path="/dashboard" element={
               <Dashboard />
             }/>
 
