@@ -19,8 +19,9 @@ const SBootstrapButton = styled(Button)`
   color: #e2e2e2;
   text-align: center;
   padding: 2px;
-  font-size: small;
-  width: 23px;
+  font-size: large;
+  width: 35px;
+  height: 40px;
   background-color: #004bad;
   &:hover {
     background-color: #006eff;
@@ -40,9 +41,10 @@ interface IFolderPayload {
 interface IAddFolderButton{
   currentFolder: any
   setCurrentFolder: (folderId: string) => void
+  setReload: (key: boolean) =>  void
 }
 
-export default function AddFolderButton({ currentFolder, setCurrentFolder }: IAddFolderButton) {
+export default function AddFolderButton({ currentFolder, setCurrentFolder, setReload }: IAddFolderButton) {
   const [isModalOpen, setModalOpen] = useState<boolean>(false)
   const [folderName, setFolderName] = useState<string>("")
   const [isLoading, setLoading] = useState<boolean>(false)
@@ -60,6 +62,7 @@ export default function AddFolderButton({ currentFolder, setCurrentFolder }: IAd
   const handleSubmit = async (e: any) => {
     e.preventDefault()
     setLoading(true)
+    
     const payload: IFolderPayload = {
       name: folderName,
       parentId: currentFolder.id,
@@ -70,8 +73,8 @@ export default function AddFolderButton({ currentFolder, setCurrentFolder }: IAd
     
 
     const newFolder = await Folders.addFolder(payload)
-   
-    setCurrentFolder(newFolder.id)
+    setReload(true)
+    //setCurrentFolder(newFolder.id)
     setLoading(false)
     setModalOpen(false)
 

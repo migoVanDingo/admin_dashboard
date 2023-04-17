@@ -21,6 +21,7 @@ const SToolbar = styled.div`
 
   grid-column: 1 / 2;
   grid-row: 1 / 3;
+  
 `
 const SHomeLink = styled.a`
   text-decoration: none;
@@ -47,6 +48,8 @@ const SToolHeadingSm = styled.h4`
   width: 100%;
 
   font-weight: 400;
+  padding: 0 0 0 8px;
+  margin: 0;
 `
 const SDashLogout = styled.a`
   color: #006aff;
@@ -57,25 +60,31 @@ const SDashLogout = styled.a`
   border-radius: 4px;
   padding: 10px;
   font-size: 1rem;
+  position: absolute;
+  bottom: 100px;
 
-  &:hover{
-    color:#60a2fe;
-    border-color:#60a2fe;
+  &:hover {
+    color: #60a2fe;
+    border-color: #60a2fe;
   }
 
-  &:active{
-    color:#3ee98b;
-    border-color:#3ee98b;
+  &:active {
+    color: #3ee98b;
+    border-color: #3ee98b;
   }
-
 `
 
 interface IToolbar {
   handleCreateFolder: () => any
+  folderId: string
 }
 
-export default function Toolbar({ allFolders, rootId }: any) {
-
+export default function Toolbar({
+  allFolders,
+  rootId,
+  setCurrentFolderId,
+  folderId
+}: any) {
   const navigate = useNavigate()
   const { logout, currentUser } = useAuth()
 
@@ -83,11 +92,20 @@ export default function Toolbar({ allFolders, rootId }: any) {
     navigate("/login")
     logout()
   }
+
+  
   return (
     <SToolbar>
-      <SHomeLink href={"/folder/"+currentUser.uid}><SToolHeadingMed >My Repo</SToolHeadingMed></SHomeLink>
+      <SHomeLink href={"/folder/" + currentUser.uid}>
+        <SToolHeadingMed>My Repo</SToolHeadingMed>
+      </SHomeLink>
       <SToolHeadingSm>Folders</SToolHeadingSm>
-      <FileTree rootId={rootId} allFolders={allFolders} />
+      <FileTree
+      folderId={folderId}
+        rootId={rootId}
+        allFolders={allFolders}
+        setCurrentFolderId={setCurrentFolderId}
+      />
       <SDashLogout onMouseUp={handleLogout}>Logout</SDashLogout>
     </SToolbar>
   )

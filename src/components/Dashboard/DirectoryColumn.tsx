@@ -50,8 +50,8 @@ export default function DirectoryColumn({
     setFolderId(e.target.id)
   }
 
-  console.log("folder: " + JSON.stringify(currentFolder))
-  console.log("id: " + currentFolder.id)
+  /* console.log("folder: " + JSON.stringify(currentFolder))
+  console.log("id: " + currentFolder.id) */
 
   return (
     <SDirectoryColumn>
