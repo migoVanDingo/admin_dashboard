@@ -9,7 +9,7 @@ const SHeader = styled.div`
   align-items: center;
   position: relative;
   justify-content: space-between;
-  border-bottom: 0.1px solid #4e4e4e;
+  /* border-bottom: 0.1px solid #4e4e4e; */
 
 `
 
@@ -27,13 +27,13 @@ const SButtonContainer = styled.div`
   gap: 5px;
 `
 
-export default function DashboardHeader({ currentFolder }: any) {
+export default function DashboardHeader({ currentFolder, setCurrentFolder, setReload }: any) {
   
   return (
     <SHeader>
       <SButtonContainer>
-        <AddFolderButton currentFolder={currentFolder}/>
-        <AddFileButton currentFolder={currentFolder} />
+        <AddFolderButton setReload={setReload} currentFolder={currentFolder} setCurrentFolder={setCurrentFolder} />
+        <AddFileButton currentFolder={currentFolder} setReload={setReload}/>
       </SButtonContainer>
     </SHeader>
   )

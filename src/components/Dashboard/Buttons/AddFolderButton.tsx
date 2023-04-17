@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import Button from "react-bootstrap/Button"
 import Form from "react-bootstrap/Form"
@@ -9,6 +9,7 @@ import { useAuth } from "../../../context/AuthContext"
 import { Folders } from "../../../api/Folders"
 import { useFolder } from "../../../hooks/useFolder"
 import { Timestamp } from "firebase/firestore"
+import { useNavigate } from "react-router"
 
 const SBootstrapButton = styled(Button)`
  
@@ -18,8 +19,9 @@ const SBootstrapButton = styled(Button)`
   color: #e2e2e2;
   text-align: center;
   padding: 2px;
-  font-size: small;
-  width: 23px;
+  font-size: large;
+  width: 35px;
+  height: 40px;
   background-color: #004bad;
   &:hover {
     background-color: #006eff;
@@ -36,13 +38,18 @@ interface IFolderPayload {
   createdAt: Date
 }
 
-export default function AddFolderButton({ currentFolder }: any) {
+interface IAddFolderButton{
+  currentFolder: any
+  setCurrentFolder: (folderId: string) => void
+  setReload: (key: boolean) =>  void
+}
+
+export default function AddFolderButton({ currentFolder, setCurrentFolder, setReload }: IAddFolderButton) {
   const [isModalOpen, setModalOpen] = useState<boolean>(false)
   const [folderName, setFolderName] = useState<string>("")
   const [isLoading, setLoading] = useState<boolean>(false)
 
   const { currentUser } = useAuth()
-
 
   const closeModal = () => {
     setModalOpen(false)
@@ -55,6 +62,7 @@ export default function AddFolderButton({ currentFolder }: any) {
   const handleSubmit = async (e: any) => {
     e.preventDefault()
     setLoading(true)
+    
     const payload: IFolderPayload = {
       name: folderName,
       parentId: currentFolder.id,
@@ -65,11 +73,14 @@ export default function AddFolderButton({ currentFolder }: any) {
     
 
     const newFolder = await Folders.addFolder(payload)
-    console.log(newFolder)
+    setReload(true)
+    //setCurrentFolder(newFolder.id)
     setLoading(false)
     setModalOpen(false)
-  }
 
+ 
+    
+  }
 
   return (
     <>
@@ -78,10 +89,13 @@ export default function AddFolderButton({ currentFolder }: any) {
       </SBootstrapButton>
 
       <Modal show={isModalOpen} onHide={closeModal}>
-        {
-          isLoading ? <h2>Loading...</h2> : 
+    
           <Form onSubmit={handleSubmit}>
           <Modal.Body>
+          {
+          isLoading ? <Form.Group>
+           <h1>Loading</h1> 
+          </Form.Group> : 
             <Form.Group>
               <Form.Label>Folder Name</Form.Label>
               <Form.Control
@@ -91,13 +105,14 @@ export default function AddFolderButton({ currentFolder }: any) {
                 onChange={(e) => setFolderName(e.target.value)}
               />
             </Form.Group>
+}
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={closeModal}>Close</Button>
             <Button disabled={isLoading} variant="success" type="submit">Add Folder</Button>
           </Modal.Footer>
         </Form>
-        }
+        
         
       </Modal>
     </>

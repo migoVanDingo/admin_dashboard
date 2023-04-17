@@ -1,82 +1,85 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faF, faFolder } from "@fortawesome/free-solid-svg-icons"
 import FolderBreadCrumbs from "./FolderBreadCrumbs"
+import { Folders } from "../../api/Folders"
+import { useAuth } from "../../context/AuthContext"
+import { useFolder } from "../../hooks/useFolder"
+import DirectoryColumn from "./DirectoryColumn"
+import PageFolderButton from "./Buttons/PageFolderButton"
+import PageFileButton from "./Buttons/PageFileButton"
 
 const SContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  background-color:#131313 ;
+  background-color: #2b2b2b;
+  width: 100%;
   height: 100%;
   overflow: scroll;
 
+  margin-top: 20px;
 `
 
-const SColContainer = styled.div`
+const SRow = styled.div`
+
+  width: 100%;
   display: flex;
   flex-direction: row;
-  height: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 20px 60px;
+  gap: 40px;
 `
 
-const SDirectoryColumn = styled.div`
-  border: 1px solid #232323;
-  flex: 1;
+export default function DashboardLanding({
+  rootFolder,
+  currentFolder,
+  allFolders,
+  setFolderId,
+  files
+}: any) {
 
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-`
+  const [pageFolders, setPageFolders] = useState<any[]>([])
 
-const SRow = styled.a`
-  width: 100%;
+  useEffect(() => {
 
-  color: white;
-  display: flex;
-  gap: 5px;
-  padding: 5px;
-  font-size: 0.8rem;
-  text-decoration: none;
+    const getPageFolders = (currentFolder: any, allFolders: any[]) => {
+      return allFolders.filter((folder: any) => folder.parentId === currentFolder.id)
+    }
 
-  &:hover{
-    background-color:#2b2b2b
-  }
-`
+    const returnPageFolders = () => {
+      if (currentFolder !== null && allFolders !== null) {
+        const folders = getPageFolders(currentFolder, allFolders)
+        setPageFolders(folders)
+      }
+    }
 
-const SGridItem = styled.div`
-  border: 2px solid red;
-  border-radius: 4px;
-  background-color: #f6f6f6;
-  height: 100%;
-  width: 100%;
-`
+    return returnPageFolders()
 
-const SFolderBreadCrumbs = styled(FolderBreadCrumbs)`
-  border: 2px solid red;
-  width: 100px;
-  height: 100px;
-  background-color:  lightblue;
-`
-
-export default function DashboardLanding({ childFolders, currentFolder }: any) {
+  }, [currentFolder, allFolders])
 
 
-  return (
-    <SContainer>
-      
-      <SColContainer>
-        <SDirectoryColumn>
-          {childFolders &&
-            childFolders.map((folder: any) => {
-              return <SRow href={"/folder/" + folder.id}><FontAwesomeIcon icon={faFolder}/>{folder.name}</SRow>
-            })}
-        </SDirectoryColumn>
 
-        <SDirectoryColumn></SDirectoryColumn>
-
-        <SDirectoryColumn></SDirectoryColumn>
-      </SColContainer>
-    </SContainer>
-  )
+  return <SContainer>
+    <SRow>
+    {
+      pageFolders && pageFolders.map((folder: any) => {
+        return(   
+          <PageFolderButton key={folder.id} folder={folder} setFolderId={setFolderId}/>
+        )
+      })
+    }
+    </SRow>
+    <SRow>
+    {
+      files && files.map((file: any) => {
+        return(
+          <PageFileButton key={file.id} file={file} />
+        )
+      })
+    }
+    </SRow>
+  </SContainer>
 }

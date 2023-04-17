@@ -13,37 +13,35 @@ import {
 } from "firebase/firestore";
 import { db } from "../config/FirebaseConfig";
 
-export class Folders {
+export class Files {
 
-    public static async getFolders(userId: string){
+    public static async getFiles(userId: string){
 
-        const q = query(collection(db, "folders"), where("userId", "==", userId))
+        const q = query(collection(db, "files"), where("userId", "==", userId))
         const snapshot = await getDocs(q)
-
-        
         
         return snapshot.docs.map((doc: any) =>  { return{id: doc.id, ...doc.data()}})
     }
 
-    public static async getFolderById(id: string){
+    public static async getFileById(id: string){
         try {
-            const docRef = doc(db, "folders", id)
+            const docRef = doc(db, "files", id)
         const docSnap = await getDoc(docRef)
 
-        return Folders.formatDoc(docSnap)
+        return Files.formatDoc(docSnap)
         } catch (error) {
             
         }
         
     }
 
-    public static async addFolder(payload: any){
+    public static async addFile(payload: any){
         payload = {
             ...payload,
-            createdAt: Folders.getDate()
+            createdAt: Files.getDate()
         }
 
-        const docRef = await addDoc(collection(db, "folders"), payload)
+        const docRef = await addDoc(collection(db, "files"), payload)
 
         return docRef
 
@@ -51,7 +49,7 @@ export class Folders {
     }
 
 
-    public static async addRootFolder(userId:any){
+    /* public static async addRootFile(userId:any){
       
         try {
             
@@ -61,10 +59,10 @@ export class Folders {
                 parentId: "",
                 userId: userId,
                 path:[],
-                createdAt: Folders.getDate()
+                createdAt: Files.getDate()
             }
     
-            const docRef = await setDoc(doc(db, "folders", userId), payload)
+            const docRef = await setDoc(doc(db, "files", userId), payload)
             .then((result: any) => {
                 console.log(result)
                 const rootSon = {
@@ -73,12 +71,12 @@ export class Folders {
                     parentId: "",
                     userId: userId,
                     path:[{id: result.id, name: "root"}],
-                    createdAt: Folders.getDate()
+                    createdAt: Files.getDate()
                 }
                 
             })
             .catch((err: any) => {
-                console.log("addRootFolder.tsx : " + err)
+                console.log("addRootFile.tsx : " + err)
             })
             
             
@@ -89,10 +87,10 @@ export class Folders {
         }
         
 
-    }
+    } */
 
-    public static async getChildFolders(userId: any, parentId: any){
-        const q = query(collection(db, "folders"), where("userId", "==", userId), where("parentId", "==", parentId))
+    public static async getChildFiles(userId: any, parentId: any){
+        const q = query(collection(db, "files"), where("userId", "==", userId), where("parentId", "==", parentId))
 
         const snapshot = await getDocs(q)
 

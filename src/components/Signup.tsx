@@ -5,6 +5,7 @@ import { Folders } from "../api/Folders";
 import { Users } from "../api/Users";
 import { useAuth } from "../context/AuthContext";
 import ForgotPassword from "./ForgotPassword";
+import { useNavigate } from "react-router";
 
 const SCard = styled.div`
   display: flex;
@@ -92,6 +93,7 @@ export default function Signup() {
   const [message, setMessage] = useState<string>("");
 
   const { signUp } = useAuth();
+  const navigate = useNavigate()
 
   async function handleSubmit() {
     if (pwRef.current.value !== pwVerifyRef.current.value) {
@@ -117,6 +119,7 @@ export default function Signup() {
         .then()
         .catch((e:any) => console.error(e))
         setMessage("Success! Account Created");
+        navigate("/login")
         
       }
     } catch (error) {
