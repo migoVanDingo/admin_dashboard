@@ -14,7 +14,7 @@ const SContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  background-color: #2b2b2b;
+  background-color: #fcfcfc;
   width: 100%;
   height: 100%;
   overflow: scroll;
@@ -33,6 +33,23 @@ const SRow = styled.div`
   gap: 40px;
 `
 
+const SFormSpace = styled.form`
+  width: 100%;
+  height: 100%;
+  
+  &.drag-active {
+    border: 1px solid red;
+  }
+`
+
+const SHiddenInput = styled.input`
+  position: absolute;
+  z-index: -1000;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left:0;
+`
 export default function DashboardLanding({
   rootFolder,
   currentFolder,
@@ -42,6 +59,7 @@ export default function DashboardLanding({
 }: any) {
 
   const [pageFolders, setPageFolders] = useState<any[]>([])
+  const [isDragActive, setDragActive] = useState<boolean>(false)
 
   useEffect(() => {
 
@@ -60,9 +78,41 @@ export default function DashboardLanding({
 
   }, [currentFolder, allFolders])
 
+  /* const handleFileUpload = () => {
+
+  }
+
+  const handleDragEnter = (e: any) => {
+    console.log("dragonL: " + e.type)
+    setDragActive(true)
+
+  }
+
+  const handleDragLeave = (e: any) => {
+    console.log("left")
+    setDragActive(false)
+  } 
+
+  const handleDrop = (e:any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      // at least one file has been dropped so do something
+      // handleFiles(e.dataTransfer.files);
+      //console.log(e.dataTransfer.files)
+      console.log("dropped")
+    }
+  };
+
+  const logChange = (e:any) => {
+    console.log(e.target.value)
+  } */
 
 
   return <SContainer>
+{/*     <SFormSpace className={isDragActive ? "drag-active" : ""} onDragEnter={handleDragEnter} onDragLeave={handleDragLeave} onDrop={handleDrop} encType="multipart/form-data" onSubmit={handleFileUpload} >
+      <SHiddenInput type="file" name="upload_file" id="upload_file" multiple={true} onChange={logChange}/> */}
     <SRow>
     {
       pageFolders && pageFolders.map((folder: any) => {
@@ -81,5 +131,6 @@ export default function DashboardLanding({
       })
     }
     </SRow>
+{/*     </SFormSpace> */}
   </SContainer>
 }

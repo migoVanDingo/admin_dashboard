@@ -15,7 +15,7 @@ const SBootstrapButton = styled(Button)`
  
   background-color: #d1cdcd;
   border-radius: 4px;
-  border: 1px solid #e2e2e2;
+
   color: #e2e2e2;
   text-align: center;
   padding: 2px;
@@ -26,7 +26,7 @@ const SBootstrapButton = styled(Button)`
   &:hover {
     background-color: #006eff;
     color:white;
-    border-color: white;
+
   }
 `
 

@@ -7,24 +7,26 @@ import { useNavigate } from "react-router"
 import FileTree from "./FileTree"
 
 const SToolbar = styled.div`
-  background: #1a1a1a;
+  background: #191449;
 
   display: flex;
   flex-direction: column;
   color: #d2d2d2;
-  padding: 35px 20px;
+  padding: 15px 20px;
 
   align-items: center;
   gap: 20px;
 
-  font-size: 0.8rem;
+  font-size: 1rem;
 
   grid-column: 1 / 2;
   grid-row: 1 / 3;
-  
 `
 const SHomeLink = styled.a`
   text-decoration: none;
+  width: 100%;
+  border-bottom: 0.5px solid #d2d2d2;
+  padding: 10px;
 `
 
 const SButton = styled.button`
@@ -37,10 +39,27 @@ const SToolbarList = styled.ul`
   display: flex;
   flex-direction: column;
   width: 100%;
+  padding-left: 0;
+`
+const SListItem = styled.li`
+  list-style-type: none;
+  width: 100%;
+`
+
+const SListLink = styled.a`
+
+  color:#d2d2d2;
+  text-decoration: none;
+  &:hover{
+    color: #00ffbf;
+    cursor: pointer;
+  }
 `
 
 const SToolHeadingMed = styled.h3`
   font-size: 1.3rem;
+  color: #00ffbf;
+  text-align: center;
 `
 const SToolHeadingSm = styled.h4`
   font-size: 1rem;
@@ -48,14 +67,26 @@ const SToolHeadingSm = styled.h4`
   width: 100%;
 
   font-weight: 400;
-  padding: 0 0 0 8px;
   margin: 0;
+  padding: 0;
 `
+
+const SHeadingTiny = styled.p`
+  font-size: 0.6rem;
+  color: #d2d2d2;
+  font-weight: 600;
+  width: 100%;
+  text-align: left;
+
+  margin: 0;
+  padding: 0;
+`
+
 const SDashLogout = styled.a`
-  color: #006aff;
+  color: #8bbbff;
   width: 150px;
   text-decoration: none;
-  border: 2px solid #006aff;
+  border: 2px solid #8bbbff;
   text-align: center;
   border-radius: 4px;
   padding: 10px;
@@ -64,8 +95,8 @@ const SDashLogout = styled.a`
   bottom: 100px;
 
   &:hover {
-    color: #60a2fe;
-    border-color: #60a2fe;
+    color: #00ffbf;
+    border-color: #00ffbf;
   }
 
   &:active {
@@ -83,7 +114,7 @@ export default function Toolbar({
   allFolders,
   rootId,
   setCurrentFolderId,
-  folderId
+  folderId,
 }: any) {
   const navigate = useNavigate()
   const { logout, currentUser } = useAuth()
@@ -93,19 +124,25 @@ export default function Toolbar({
     logout()
   }
 
-  
   return (
     <SToolbar>
       <SHomeLink href={"/folder/" + currentUser.uid}>
-        <SToolHeadingMed>My Repo</SToolHeadingMed>
+        <SToolHeadingMed>AOLME</SToolHeadingMed>
       </SHomeLink>
+      <SHeadingTiny>Navigation Shortcuts</SHeadingTiny>
+      <SToolbarList>
+        <SListItem><SListLink>Dashboard</SListLink></SListItem>
+        <SListItem><SListLink>Repository</SListLink></SListItem>
+        <SListItem><SListLink target="_blank" rel="noopener" href="http://localhost:8082/user/login/">Labeler</SListLink></SListItem>
+      </SToolbarList>
       <SToolHeadingSm>Folders</SToolHeadingSm>
       <FileTree
-      folderId={folderId}
+        folderId={folderId}
         rootId={rootId}
         allFolders={allFolders}
         setCurrentFolderId={setCurrentFolderId}
       />
+      {/* <SToolHeadingSm>Exports</SToolHeadingSm> */}
       <SDashLogout onMouseUp={handleLogout}>Logout</SDashLogout>
     </SToolbar>
   )

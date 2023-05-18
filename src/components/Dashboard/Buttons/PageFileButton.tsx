@@ -16,16 +16,19 @@ const SIconContainer = styled.button`
 
 
     &:hover{
-        background-color: #232323;
+        background-color: #e1e1e1;
     }
 `
 
 const SIcon = styled(FontAwesomeIcon)`
     font-size: 40px;
+    color: #3c3c3c;
 `
 
 const SFileName = styled.p`
-    color:white;
+    font-size: 0.7em;
+    color: #3c3c3c;
+    margin-top: 10px;
 `
 
 

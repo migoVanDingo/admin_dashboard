@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import Button from "react-bootstrap/Button"
 import Form from "react-bootstrap/Form"
@@ -9,11 +9,13 @@ import { useAuth } from "../../../context/AuthContext"
 import { Folders } from "../../../api/Folders"
 import { useFolder } from "../../../hooks/useFolder"
 import { Files } from "../../../api/Files"
+import { MDBFile } from 'mdb-react-ui-kit';
+import UploadService from "../../../services/FileUploadService"
+import { doc } from "firebase/firestore"
 
 const SBootstrapButton = styled(Button)`
   background-color: green;
   border-radius: 4px;
-  border: 1px solid #e2e2e2;
   color: #e2e2e2;
   text-align: center;
 
@@ -25,7 +27,7 @@ const SBootstrapButton = styled(Button)`
   &:hover {
     background-color: #00aa00;
     color: white;
-    border-color: white;
+ 
   }
 `
 
@@ -34,6 +36,7 @@ interface IFilePayload {
   folderId: string
   userId: string
   createdAt: Date
+  ext: string
 }
 
 export default function AddFileButton({ currentFolder, setReload }: any) {
@@ -44,6 +47,50 @@ export default function AddFileButton({ currentFolder, setReload }: any) {
   const { currentUser } = useAuth()
   const { folder } = useFolder(currentFolder)
 
+  const [uploadLocalFiles, setUploadLocalFiles] = useState<any[]>([])
+
+
+  const [selectedFiles, setSelectedFiles] = useState<any[]>([])
+  const [currentFile, setCurrentFile] = useState<any>(undefined)
+  const [progress, setProgress] = useState(0)
+  const [message, setMessage] = useState("")
+
+  const [fileInfos, setFileInfos] = useState([])
+
+
+
+  const upload = (fileName: string) => {
+    let uploadFile = selectedFiles[0]
+
+    console.log(uploadFile)
+    const renamedFile = new File([uploadFile], fileName, { type: uploadFile.type, lastModified: uploadFile.lastModified})
+
+    console.log(renamedFile)
+    setProgress(0)
+    setCurrentFile(renamedFile)
+
+    UploadService.upload(renamedFile, (event: any) => {
+      setProgress(Math.round((100 * event.loaded) / event.total))
+    })
+      .then((response) => {
+        setMessage(response.data.message)
+        console.log(response.data.message)
+        return UploadService.getFiles()
+      })
+      .then((files) => {
+        setFileInfos(files.data)
+      })
+      .catch(() => {
+        setProgress(0)
+        setMessage("Could not upload the file!")
+        setCurrentFile(undefined)
+      })
+
+    setSelectedFiles([])
+  }
+
+
+
   const closeModal = () => {
     setModalOpen(false)
   }
@@ -52,19 +99,35 @@ export default function AddFileButton({ currentFolder, setReload }: any) {
     setModalOpen(true)
   }
 
+  const handleChange = (e: any) => {
+    setSelectedFiles(e.target.files)
+  }
   
   const handleSubmit = async (e: any) => {
     e.preventDefault()
     setLoading(true)
 
+    const extArr = selectedFiles[0].name.split(".")
+    const fileExtension = extArr[extArr.length - 1]
+
     const payload: IFilePayload = {
-      name: fileName,
+      name: selectedFiles[0].name,
+      ext: fileExtension,
       folderId: currentFolder.id,
       userId: currentUser.uid,
       createdAt: Folders.getDate(),
     }
 
     const newFile = await Files.addFile(payload)
+    if(newFile !== null && newFile !== undefined){
+
+      const newFileName = newFile.id + "." + fileExtension
+      upload(newFileName)
+    }
+    
+
+    
+    
     setReload(true)
     setLoading(false)
     setModalOpen(false)
@@ -77,17 +140,14 @@ export default function AddFileButton({ currentFolder, setReload }: any) {
       </SBootstrapButton>
 
       <Modal show={isModalOpen} onHide={closeModal}>
-        <Form onSubmit={handleSubmit}>
+        <Form  encType="multipart/form-data" onSubmit={handleSubmit}>
+          
           <Modal.Body>
             <Form.Group>
-              <Form.Label>File Name</Form.Label>
-              <Form.Control
-                type="text"
-                required={true}
-                value={fileName}
-                onChange={(e) => setFileName(e.target.value)}
-              />
+              <MDBFile label='Upload file'  id='upload_file' name="upload_file" multiple={true} onChange={handleChange}/>
             </Form.Group>
+
+            
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={closeModal}>
