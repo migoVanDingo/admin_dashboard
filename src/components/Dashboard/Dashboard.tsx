@@ -17,7 +17,7 @@ const SDashboard = styled.div`
   height: 100vh;
   display: grid;
   grid-template-columns: [start] 220px [line2] auto [end] 0px;
-  background-color: #232323;
+  background-color: #f7f7f7;
 
   position: relative;
 `
@@ -34,7 +34,7 @@ const SDashboardHeader = styled.div`
 const SRepoSpace = styled.div`
   grid-column: line2/end;
   height: calc(100vh - 30px);
-  margin: 15px 25px;
+  margin: 15px 0 0 0;
 
   display: flex;
   flex-direction: column;
@@ -132,7 +132,7 @@ export default function Dashboard() {
 
   
 
-  console.log("currentFolder: " + JSON.stringify(currentFolder))
+  //console.log("currentFolder: " + JSON.stringify(currentFolder))
   if (currentUser) {
     return (
       <SDashboard>

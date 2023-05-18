@@ -53,8 +53,8 @@ export default function FileTree({ allFolders, rootId, setCurrentFolderId, folde
       
       setCurrent(currentFolder)
       const path = currentFolder[0].path
-      console.log("folderID: " + folderId)
-      console.log("path: " + JSON.stringify(path))
+      /* console.log("folderID: " + folderId)
+      console.log("path: " + JSON.stringify(path)) */
       path.shift()
     
       const expandIds = path.map((p: any) => p.id)
@@ -69,7 +69,7 @@ export default function FileTree({ allFolders, rootId, setCurrentFolderId, folde
       } */
       
       
-      console.log("expand: " + JSON.stringify(expandIds))
+      //console.log("expand: " + JSON.stringify(expandIds))
       setExpanded(expandIds)
       
 

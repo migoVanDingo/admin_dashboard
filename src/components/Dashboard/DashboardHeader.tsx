@@ -10,6 +10,7 @@ const SHeader = styled.div`
   position: relative;
   justify-content: space-between;
   /* border-bottom: 0.1px solid #4e4e4e; */
+  margin-left: 20px;
 
 `
 

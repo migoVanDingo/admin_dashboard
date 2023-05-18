@@ -49,45 +49,7 @@ export class Files {
     }
 
 
-    /* public static async addRootFile(userId:any){
-      
-        try {
-            
-            const payload = {
-                folderId: userId,
-                name: "root",
-                parentId: "",
-                userId: userId,
-                path:[],
-                createdAt: Files.getDate()
-            }
-    
-            const docRef = await setDoc(doc(db, "files", userId), payload)
-            .then((result: any) => {
-                console.log(result)
-                const rootSon = {
-                    folderId: userId,
-                    name: "root",
-                    parentId: "",
-                    userId: userId,
-                    path:[{id: result.id, name: "root"}],
-                    createdAt: Files.getDate()
-                }
-                
-            })
-            .catch((err: any) => {
-                console.log("addRootFile.tsx : " + err)
-            })
-            
-            
-            return docRef
-    
-        } catch (error) {
-            console.error(error)
-        }
-        
 
-    } */
 
     public static async getChildFiles(userId: any, parentId: any){
         const q = query(collection(db, "files"), where("userId", "==", userId), where("parentId", "==", parentId))
