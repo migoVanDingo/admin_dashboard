@@ -5,7 +5,7 @@ const upload = (file: any, onUploadProgress: any) => {
 
   formData.append("file", file);
 
-  return http.post("http://44.211.168.222:3002/upload", formData, {
+  return http.post("http://localhost:3002/upload", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
       
