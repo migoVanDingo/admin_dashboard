@@ -133,7 +133,7 @@ export default function Toolbar({
       <SToolbarList>
         <SListItem><SListLink>Dashboard</SListLink></SListItem>
         <SListItem><SListLink>Repository</SListLink></SListItem>
-        <SListItem><SListLink target="_blank" rel="noopener" href="http://localhost:8082/user/login/">Labeler</SListLink></SListItem>
+        <SListItem><SListLink target="_blank" rel="noopener" href="http://localhost:8080/user/login/">Labeler</SListLink></SListItem>
       </SToolbarList>
       <SToolHeadingSm>Folders</SToolHeadingSm>
       <FileTree

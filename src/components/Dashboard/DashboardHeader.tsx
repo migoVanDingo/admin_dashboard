@@ -2,6 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import AddFileButton from "./Buttons/AddFileButton"
 import AddFolderButton from "./Buttons/AddFolderButton"
+import ConvertCsvButton from "./Buttons/ConvertCsvButton"
 
 const SHeader = styled.div`
   display: flex;
@@ -35,6 +36,8 @@ export default function DashboardHeader({ currentFolder, setCurrentFolder, setRe
       <SButtonContainer>
         <AddFolderButton setReload={setReload} currentFolder={currentFolder} setCurrentFolder={setCurrentFolder} />
         <AddFileButton currentFolder={currentFolder} setReload={setReload}/>
+        <ConvertCsvButton currentFolder={currentFolder} setReload={setReload}/>
+
       </SButtonContainer>
     </SHeader>
   )
